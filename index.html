@@ -195,31 +195,35 @@ function renderHome(){
       matchInside=!!term&&DATA.portafolio.some(function(r){return norm(r.curso+' '+r.docente).indexOf(term)>-1;});
     }else{
       var all=DATA.enlaces.filter(function(l){return l.id_area===a.id_area;});
-      var pl=periods(all);
-      if(!cardPeriod[a.id_area])cardPeriod[a.id_area]=defaultPeriod(pl);
-      var sel=cardPeriod[a.id_area];
-      var links=all.filter(function(l){return l.periodo==='General'||!l.periodo||l.periodo===sel;});
-      if(term&&!matchArea){
-        links=links.filter(function(l){return norm(l.nombre+' '+l.tipo+' '+l.responsable+' '+l.grupo).indexOf(term)>-1;});
-        matchInside=links.length>0;
-      }
-      links.sort(function(x,y){return num(x.orden)-num(y.orden);});
-      var sum=links.length;
-      var opts='';
-      if(pl.length){
-        opts='<div class="per">Periodo <select data-area="'+esc(a.id_area)+'" aria-label="Periodo de '+esc(a.nombre)+'">'+
-          pl.map(function(p){return '<option'+(p===sel?' selected':'')+'>'+esc(p)+'</option>';}).join('')+'</select></div>';
-      }
-      var list='',lastG=null;
-      links.forEach(function(l){
-        var g=l.grupo||'';
-        if(g!==lastG){if(g)list+='</ul><p class="grp">'+esc(g)+'</p><ul>';lastG=g;}
-        var meta=[l.tipo,l.responsable,l.fecha_limite?'Hasta '+l.fecha_limite:''].filter(Boolean).join(' · ');
-        list+='<li>'+linkHtml(l.url,l.nombre,'lnk')+'<span class="meta">'+esc(meta)+'</span></li>';
-      });
-      if(!sum)list='<li><span class="meta">Aún no hay enlaces para este periodo.</span></li>';
-      var open=(openCard[a.id_area]||(term&&matchInside))?' open':'';
-      body='<details class="links" data-area="'+esc(a.id_area)+'"'+open+'><summary>Formatos y enlaces ('+sum+')</summary>'+opts+'<ul>'+list+'</ul></details>';
+    var pl=periods(all);
+    if(!cardPeriod[a.id_area])cardPeriod[a.id_area]=defaultPeriod(pl);
+    var sel=cardPeriod[a.id_area];
+    var links=all.filter(function(l){return l.periodo==='General'||!l.periodo||l.periodo===sel;});
+    var matchLinks=false;
+    if(term&&!matchArea){
+      links=links.filter(function(l){return norm(l.nombre+' '+l.tipo+' '+l.responsable+' '+l.grupo).indexOf(term)>-1;});
+      matchLinks=links.length>0;
+    }
+    links.sort(function(x,y){return num(x.orden)-num(y.orden);});
+    var sum=links.length;
+    var opts='';
+    if(pl.length){
+      opts='<div class="per">Periodo <select data-area="'+esc(a.id_area)+'" aria-label="Periodo de '+esc(a.nombre)+'">'+
+        pl.map(function(p){return '<option'+(p===sel?' selected':'')+'>'+esc(p)+'</option>';}).join('')+'</select></div>';
+    }
+    var list='',lastG=null;
+    links.forEach(function(l){
+      var g=l.grupo||'';
+      if(g!==lastG){if(g)list+='</ul><p class="grp">'+esc(g)+'</p><ul>';lastG=g;}
+      var meta=[l.tipo,l.responsable,l.fecha_limite?'Hasta '+l.fecha_limite:''].filter(Boolean).join(' · ');
+      list+='<li>'+linkHtml(l.url,l.nombre,'lnk')+'<span class="meta">'+esc(meta)+'</span></li>';
+    });
+    if(!sum)list='<li><span class="meta">Aún no hay enlaces para este periodo.</span></li>';
+    var open=(openCard[a.id_area]||(term&&matchLinks))?' open':'';
+    body='<details class="links" data-area="'+esc(a.id_area)+'"'+open+'><summary>Formatos y enlaces ('+sum+')</summary>'+opts+'<ul>'+list+'</ul></details>';
+
+    var matchPort=isPort&&!!term&&DATA.portafolio.some(function(r){return norm(r.curso+' '+r.docente).indexOf(term)>-1;});
+    matchInside=matchLinks||matchPort;
     }
     if(!matchArea&&!matchInside)return;
     shown++;
