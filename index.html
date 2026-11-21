@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal de la Dirección de Escuela</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f7fa; --surface:#ffffff; --text:#14213a; --muted:#5a6780; --line:#dde3ec;
+  --navy:#0a3a66; --navy-ink:#ffffff; --accent:#1c7c54; --accent-ink:#ffffff; --chip:#e8eef6; --bar:#1a252f;
+  --c-acre:#0a3a66; --c-cal:#1c7c54; --c-rsu:#b45a12; --c-ges:#6b3fa0; --page:#f5f7fa;
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#0f1624; --bg:#0f1624; --surface:#18223a; --text:#e8edf6; --muted:#9aa8c2; --line:#2a3858;
+  --navy:#0c2a4d; --chip:#223153; --accent:#3fb585; --accent-ink:#06261a; --bar:#0c1424;
+  --c-acre:#6fb0f0; --c-cal:#3fb585; --c-rsu:#f0a35e; --c-ges:#b996ea;
+}
+:root[data-theme="dark"] .chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--text);font-family:"Figtree",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.5}
+header{background:var(--navy);color:var(--navy-ink);padding:28px 20px 72px}
+.wrap{max-width:1080px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.02em;font-size:15px;opacity:.9}
+.logo{width:34px;height:34px;border-radius:50%;border:2px solid currentColor;display:grid;place-items:center;font-size:11px;flex:none}
+h1{font-size:clamp(26px,5vw,40px);line-height:1.15;margin:22px 0 8px;font-weight:700;max-width:18ch}
+header p{margin:0;max-width:52ch;opacity:.85;font-size:17px}
+main{margin-top:-42px;padding:0 20px 40px}
+.tools{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;box-shadow:0 8px 24px rgba(10,30,60,.12)}
+.search{flex:1 1 260px;display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:10px;padding:0 12px;background:var(--bg)}
+.search:focus-within{border-color:var(--navy)}
+.search input{flex:1;border:0;background:transparent;color:var(--text);font:inherit;font-size:16px;padding:11px 0;outline:0;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:0;background:var(--chip);color:var(--text);font:inherit;font-size:14px;font-weight:600;padding:8px 14px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--navy);color:var(--navy-ink)}
+.chip:focus-visible,.btn:focus-visible,summary:focus-visible,.theme:focus-visible,a:focus-visible,select:focus-visible,.back:focus-visible{outline:3px solid #f2b705;outline-offset:2px}
+.count{margin:22px 2px 12px;color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:12px;padding:20px}
+.card h2{margin:0 0 6px;font-size:21px;color:var(--c);display:flex;align-items:center;gap:10px}
+.ico{width:34px;height:34px;border-radius:9px;background:var(--c);color:var(--bg);display:grid;place-items:center;font-size:16px;flex:none}
+.card .desc{margin:0 0 16px;color:var(--muted);font-size:15px}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:700;font-size:15px;padding:10px 16px;border-radius:8px;border:0;font-family:inherit;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.off{background:var(--chip);color:var(--muted);cursor:not-allowed}
+.btn.sec{background:var(--navy);color:var(--navy-ink);margin-left:6px}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+details.links{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+summary{cursor:pointer;font-weight:600;font-size:15px;list-style:none;display:flex;justify-content:space-between}
+summary::-webkit-details-marker{display:none}
+details.links summary::after{content:"+";font-size:20px;line-height:1;color:var(--muted)}
+details.links[open] summary::after{content:"–"}
+.per{margin:10px 0 0;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+select{font:inherit;font-size:14px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+ul{list-style:none;margin:8px 0 0;padding:0}
+li{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px dashed var(--line);font-size:15px}
+li:last-child{border-bottom:0}
+li a{color:var(--text);font-weight:500;text-decoration-color:var(--c);text-underline-offset:3px}
+li a:hover{color:var(--c)}
+li .nolink{color:var(--muted)}
+.meta{color:var(--muted);font-size:13px;text-align:right}
+.grp{margin:12px 0 0;font-size:13px;font-weight:700;color:var(--c)}
+.msg{padding:40px 10px;text-align:center;color:var(--muted)}
+footer{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:34px;color:var(--muted);font-size:13px}
+.theme{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:8px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+.back{background:transparent;border:0;color:var(--text);font:inherit;font-weight:600;cursor:pointer;padding:6px 10px 6px 0}
+/* Portafolio */
+.ciclo{margin-bottom:10px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.ciclo>summary{background:var(--bar);color:#fff;padding:15px;font-weight:700}
+.ciclo>summary::after{content:"+";font-size:20px}
+.ciclo[open]>summary::after{content:"–"}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;table-layout:fixed;min-width:680px}
+th{background:var(--chip);padding:12px;text-align:left;font-size:12px;border-bottom:2px solid var(--line)}
+td{padding:14px 12px;border-bottom:1px solid var(--line);font-size:14px;word-wrap:break-word;vertical-align:middle}
+.c1{width:42%}.c2{width:36%}.c3{width:22%}
+.tag{font-size:11px;font-weight:700;background:#fff3cd;color:#856404;border:1px solid #ffeeba;border-radius:4px;padding:2px 6px;margin-left:6px}
+.cod{display:block;color:var(--muted);font-size:12px}
+.ptitle{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin:22px 0 4px}
+.ptitle h2{margin:0;font-size:22px}
+.countrow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:22px 0 12px}
+.countrow .count{margin:0}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <span class="logo">UN</span>
+      <span>Escuela Profesional de Ingeniería Ambiental</span>
+    </div>
+    <h1>Portal de la Dirección de Escuela</h1>
+    <p>Todas las carpetas, formatos y reportes en un solo lugar. Cada enlace abre el Drive correspondiente con tu correo institucional.</p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <!-- Vista principal -->
+    <section id="home">
+      <div class="tools">
+        <label class="search"><span aria-hidden="true">🔎</span>
+          <input id="q" type="search" placeholder="Buscar área, formato, curso o responsable…" aria-label="Buscar">
+        </label>
+        <div class="chips" id="chips" role="group" aria-label="Filtrar por categoría"></div>
+      </div>
+      <div class="countrow"><p class="count" id="count" aria-live="polite"></p><button class="theme" type="button" data-themebtn>🌙 Modo oscuro</button></div>
+      <div class="grid" id="grid"><div class="msg">Cargando portal…</div></div>
+    </section>
+
+    <!-- Vista de portafolio -->
+    <section id="port" hidden>
+      <div class="tools">
+        <label class="search"><span aria-hidden="true">🔎</span>
+          <input id="pq" type="search" placeholder="Buscar por curso o docente…" aria-label="Buscar por curso o docente">
+        </label>
+        <div class="per" style="margin:0">Periodo <select id="psel" aria-label="Periodo del portafolio"></select></div>
+      </div>
+      <div class="ptitle">
+        <button class="back" id="back" type="button">← Volver al portal</button>
+        <h2 id="ptitle">Portafolio de cursos</h2>
+      </div>
+      <div class="countrow"><p class="count" id="pcount" aria-live="polite"></p><button class="theme" type="button" data-themebtn>🌙 Modo oscuro</button></div>
+      <div id="pbody"></div>
+    </section>
+
+    <footer>
+      <span>Si un enlace pide permiso, solicita acceso al responsable del área.</span>
+    </footer>
+  </div>
+</main>
+
+<script>
+// 1. URL SCRIPT
+var API_URL = 'https://script.google.com/macros/s/AKfycbwwf3EbaugcTWhD4oiUNPAQWrrWjm86en4ALHVTcePhOvRpHGrep0c4Q7prdyaI2QgHHA/exec';
+
+// 2. Tema inicial: 'claro' u 'oscuro'
+var TEMA_INICIAL = 'claro';
+var STORAGE_KEY = 'portal_epiam_cache_v1';
+
+var DATA = null, active = 'Todas', bound = false;
+var cardPeriod = {}, openCard = {}, openCiclo = {}, portPeriod = null;
+var ROMAN = {I:1,II:2,III:3,IV:4,V:5,VI:6,VII:7,VIII:8,IX:9,X:10};
+var COLORS = {'Acreditación':'--c-acre','Calidad':'--c-cal','Proyección social':'--c-rsu','Gestión':'--c-ges'};
+
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t==='oscuro'?'dark':'light');
+  Array.prototype.forEach.call(document.querySelectorAll('[data-themebtn]'),function(b){
+    b.textContent=t==='oscuro'?'☀️ Modo claro':'🌙 Modo oscuro';
+  });
+}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});}
+function safeUrl(u){return /^https?:\/\//i.test(u||'')?u:'';}
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+function num(x){var n=parseFloat(x);return isNaN(n)?999:n;}
+function pkey(p){var m=/^(\d{4})-(I{1,2})$/.exec(p);return m?parseInt(m[1],10)*10+m[2].length:0;}
+function periods(list){
+  var seen={},out=[];
+  list.forEach(function(r){var p=r.periodo;if(p&&p!=='General'&&!seen[p]){seen[p]=1;out.push(p);}});
+  return out.sort(function(a,b){return pkey(b)-pkey(a);});
+}
+function defaultPeriod(list){
+  var cur=DATA.config&&DATA.config.periodo_actual;
+  return list.indexOf(cur)>-1?cur:(list[0]||'');
+}
+function linkHtml(url,label,cls){
+  var u=safeUrl(url);
+  return u?'<a class="'+cls+'" href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(label)+'</a>'
+          :'<span class="'+cls+' off">'+esc(label)+' (sin enlace)</span>';
+}
+
+/* ---------- Vista principal ---------- */
+function renderChips(){
+  var cats=['Todas'];
+  DATA.areas.forEach(function(a){if(a.categoria&&cats.indexOf(a.categoria)<0)cats.push(a.categoria);});
+  var h='';
+  cats.forEach(function(c){h+='<button class="chip" type="button" data-cat="'+esc(c)+'" aria-pressed="'+(c===active)+'">'+esc(c)+'</button>';});
+  document.getElementById('chips').innerHTML=h;
+}
+
+function renderHome(){
+  var term=norm(document.getElementById('q').value.trim());
+  var areas=DATA.areas.slice().sort(function(a,b){return num(a.orden)-num(b.orden);});
+  var html='',shown=0;
+  areas.forEach(function(a){
+    if(active!=='Todas'&&a.categoria!==active)return;
+    var isPort=a.id_area==='portafolio';
+    var matchArea=!term||norm(a.nombre+' '+a.descripcion+' '+a.categoria).indexOf(term)>-1;
+    var color='var('+(COLORS[a.categoria]||'--c-ges')+')';
+    var body='',matchInside=false;
+
+    if(isPort){
+      matchInside=!!term&&DATA.portafolio.some(function(r){return norm(r.curso+' '+r.docente).indexOf(term)>-1;});
+    }else{
+      var all=DATA.enlaces.filter(function(l){return l.id_area===a.id_area;});
+      var pl=periods(all);
+      if(!cardPeriod[a.id_area])cardPeriod[a.id_area]=defaultPeriod(pl);
+      var sel=cardPeriod[a.id_area];
+      var links=all.filter(function(l){return l.periodo==='General'||!l.periodo||l.periodo===sel;});
+      if(term&&!matchArea){
+        links=links.filter(function(l){return norm(l.nombre+' '+l.tipo+' '+l.responsable+' '+l.grupo).indexOf(term)>-1;});
+        matchInside=links.length>0;
+      }
+      links.sort(function(x,y){return num(x.orden)-num(y.orden);});
+      var sum=links.length;
+      var opts='';
+      if(pl.length){
+        opts='<div class="per">Periodo <select data-area="'+esc(a.id_area)+'" aria-label="Periodo de '+esc(a.nombre)+'">'+
+          pl.map(function(p){return '<option'+(p===sel?' selected':'')+'>'+esc(p)+'</option>';}).join('')+'</select></div>';
+      }
+      var list='',lastG=null;
+      links.forEach(function(l){
+        var g=l.grupo||'';
+        if(g!==lastG){if(g)list+='</ul><p class="grp">'+esc(g)+'</p><ul>';lastG=g;}
+        var meta=[l.tipo,l.responsable,l.fecha_limite?'Hasta '+l.fecha_limite:''].filter(Boolean).join(' · ');
+        list+='<li>'+linkHtml(l.url,l.nombre,'lnk')+'<span class="meta">'+esc(meta)+'</span></li>';
+      });
+      if(!sum)list='<li><span class="meta">Aún no hay enlaces para este periodo.</span></li>';
+      var open=(openCard[a.id_area]||(term&&matchInside))?' open':'';
+      body='<details class="links" data-area="'+esc(a.id_area)+'"'+open+'><summary>Formatos y enlaces ('+sum+')</summary>'+opts+'<ul>'+list+'</ul></details>';
+    }
+    if(!matchArea&&!matchInside)return;
+    shown++;
+    var carpeta=safeUrl(a.link_carpeta);
+    var btns=isPort
+      ?'<button class="btn" type="button" data-port="1">Ver cursos por ciclo</button>'+(carpeta?'<a class="btn sec" href="'+esc(carpeta)+'" target="_blank" rel="noopener">Carpeta general</a>':'')
+      :(carpeta?'<a class="btn" href="'+esc(carpeta)+'" target="_blank" rel="noopener">Abrir carpeta en Drive</a>':'<span class="btn off">Carpeta sin enlace</span>');
+    html+='<article class="card" style="--c:'+color+'"><h2><span class="ico" aria-hidden="true">'+esc(a.icono||'📁')+'</span>'+esc(a.nombre)+'</h2>'+
+      '<p class="desc">'+esc(a.descripcion)+'</p><div class="row">'+btns+'</div>'+body+'</article>';
+  });
+  document.getElementById('grid').innerHTML=html||'<div class="msg">No hay resultados. Prueba con otra palabra o quita el filtro.</div>';
+  document.getElementById('count').textContent=shown?'Mostrando '+shown+(shown===1?' área':' áreas'):'';
+}
+
+/* ---------- Vista de portafolio ---------- */
+function openPort(){
+  var pl=periods(DATA.portafolio);
+  if(!portPeriod)portPeriod=defaultPeriod(pl);
+  document.getElementById('psel').innerHTML=pl.map(function(p){return '<option'+(p===portPeriod?' selected':'')+'>'+esc(p)+'</option>';}).join('');
+  document.getElementById('home').hidden=true;
+  document.getElementById('port').hidden=false;
+  window.scrollTo(0,0);
+  renderPort();
+}
+function renderPort(){
+  var term=norm(document.getElementById('pq').value.trim());
+  document.getElementById('ptitle').textContent='Portafolio de cursos '+(portPeriod||'');
+  var rows=DATA.portafolio.filter(function(r){
+    return r.periodo===portPeriod&&(!term||norm(r.curso+' '+r.docente+' '+r.codigo).indexOf(term)>-1);
+  });
+  var by={};
+  rows.forEach(function(r){(by[r.ciclo]=by[r.ciclo]||[]).push(r);});
+  var ciclos=Object.keys(by).sort(function(a,b){return (ROMAN[a]||99)-(ROMAN[b]||99);});
+  var html='';
+  ciclos.forEach(function(c){
+    var open=(term||openCiclo[c])?' open':'';
+    html+='<details class="ciclo" data-ciclo="'+esc(c)+'"'+open+'><summary>CICLO '+esc(c)+'</summary><div class="tw"><table>'+
+      '<thead><tr><th class="c1">Curso</th><th class="c2">Docente</th><th class="c3" style="text-align:center">Recursos</th></tr></thead><tbody>';
+    by[c].forEach(function(r){
+      var u=safeUrl(r.url_carpeta);
+      html+='<tr><td>'+esc(r.curso)+(r.nota?'<span class="tag">'+esc(r.nota)+'</span>':'')+(r.codigo?'<span class="cod">'+esc(r.codigo)+'</span>':'')+'</td>'+
+        '<td>'+esc(r.docente)+'</td><td style="text-align:center">'+
+        (u?'<a class="btn" style="font-size:12px;padding:8px 18px" href="'+esc(u)+'" target="_blank" rel="noopener">ACCEDER</a>':'<span class="btn off" style="font-size:12px;padding:8px 18px">Sin enlace</span>')+'</td></tr>';
+    });
+    html+='</tbody></table></div></details>';
+  });
+  document.getElementById('pbody').innerHTML=html||'<div class="msg">No hay cursos que coincidan.</div>';
+  document.getElementById('pcount').textContent=rows.length?'Mostrando '+rows.length+(rows.length===1?' curso':' cursos'):'';
+}
+
+/* ---------- Eventos ---------- */
+function bind(){
+  if(bound)return;
+  bound=true;
+  document.getElementById('q').addEventListener('input',renderHome);
+  document.getElementById('pq').addEventListener('input',renderPort);
+  document.getElementById('chips').addEventListener('click',function(e){
+    var b=e.target.closest('[data-cat]');if(!b)return;
+    active=b.getAttribute('data-cat');renderChips();renderHome();
+  });
+  var grid=document.getElementById('grid');
+  grid.addEventListener('click',function(e){if(e.target.closest('[data-port]'))openPort();});
+  grid.addEventListener('change',function(e){
+    var s=e.target.closest('select[data-area]');if(!s)return;
+    cardPeriod[s.getAttribute('data-area')]=s.value;
+    openCard[s.getAttribute('data-area')]=true;
+    renderHome();
+  });
+  grid.addEventListener('toggle',function(e){
+    var d=e.target;if(d.matches&&d.matches('details.links'))openCard[d.getAttribute('data-area')]=d.open;
+  },true);
+  document.getElementById('pbody').addEventListener('toggle',function(e){
+    var d=e.target;if(d.matches&&d.matches('details.ciclo'))openCiclo[d.getAttribute('data-ciclo')]=d.open;
+  },true);
+  document.getElementById('psel').addEventListener('change',function(e){portPeriod=e.target.value;renderPort();});
+  Array.prototype.forEach.call(document.querySelectorAll('[data-themebtn]'),function(b){
+    b.addEventListener('click',function(){
+      setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'claro':'oscuro');
+    });
+  });
+  document.getElementById('back').addEventListener('click',function(){
+    document.getElementById('port').hidden=true;document.getElementById('home').hidden=false;
+  });
+}
+
+function init(data){
+  DATA=data;
+  bind();
+  renderChips();
+  renderHome();
+  if(!document.getElementById('port').hidden) renderPort();
+}
+function fail(err){
+  document.getElementById('grid').innerHTML='<div class="msg">No se pudo cargar el portal. Actualiza la página o avisa a la Dirección.<br><small>'+esc(err&&err.message||err)+'</small></div>';
+}
+
+/* ---------- Arranque instantáneo con caché local ---------- */
+setTheme(TEMA_INICIAL);
+var cachedRaw = null;
+try {
+  cachedRaw = localStorage.getItem(STORAGE_KEY);
+  if (cachedRaw) init(JSON.parse(cachedRaw));
+} catch (e) {}
+
+fetch(API_URL)
+  .then(function(r){ if(!r.ok) throw new Error('Error HTTP ' + r.status); return r.json(); })
+  .then(function(fresh){
+    var freshRaw = JSON.stringify(fresh);
+    if (freshRaw !== cachedRaw) {
+      try { localStorage.setItem(STORAGE_KEY, freshRaw); } catch (e) {}
+      init(fresh);
+    }
+  })
+  .catch(function(err){
+    if (!DATA) fail(err);
+  });
+</script>
+</body>
+</html>
